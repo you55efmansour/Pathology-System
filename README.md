@@ -17,7 +17,7 @@ Open **http://127.0.0.1:4175**. For production: `npm run build`, then `npm run p
 
 The client demo is published at **https://you55efmansour.github.io/Pathology-System/**.
 
-The workflow in `.github/workflows/pages.yml` checks and builds every push to `main`, then publishes the result to GitHub Pages. Pages uses the **GitHub Actions** publishing source. The build uses Pages' repository base path and hash-based routes so links and page refreshes work on static hosting. Local development retains browser-based routes.
+Source lives on `main`; GitHub Pages publishes the generated files from the root of `gh-pages`. To update the client demo, run `npm run deploy` from an account with push access. The deployment script builds with the repository base path and hash-based routes, then pushes the generated files to `gh-pages` while preserving that branch's history. Local development retains browser-based routes. Pages automatically republishes when the deployment branch is updated.
 
 ## Included
 
