@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+.playwright-preview/
+.playwright-mcp/
+.impeccable/review/
+.env
+.env.*
+!.env.example
+*.local
