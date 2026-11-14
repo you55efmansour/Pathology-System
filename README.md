@@ -28,6 +28,7 @@ Source lives on `main`; GitHub Pages publishes the generated files from the root
 - Shared editor, draft persistence and warnings before leaving unsaved edits.
 - Review → return for edits → resubmit → simulated approval → confirmed finalization.
 - Finalized records are read-only in both the UI and service mutation methods. Direct editor URLs redirect to their final view.
+- In-page final-report PDF viewer with page navigation, zoom, fit-to-width, direct download, loading/error recovery and Arabic layout. PDF tools load only on finalized reports.
 - A4 browser printing / Save as PDF, gated on finalization and image availability, with patient/specimen metadata, report text, selected images, status and clearly labeled simulated approval information.
 - English and Arabic controls with RTL layout, mobile navigation, keyboard focus and reduced-motion support.
 - Eight fictional sample cases covering every workflow state. No real patient data or clinical findings.
@@ -49,9 +50,10 @@ src/
       pages/           CaseListPage, CaseWorkspace, IntakePage, SlidesPage
       services/        caseService.js and service tests
     reports/
-      components/      ReportDocument.jsx
+      components/      ReportDocument.jsx, FinalReportViewer.jsx
       config/          reportTemplates.js
       pages/           ReportEditorPage, ReviewPage, TemplatesPage
+      services/        reportPdf.js
     shared/
       components/      WorkspaceState.jsx
       pages/           WorkspacePage.jsx
@@ -120,7 +122,9 @@ Manual walkthrough:
 3. Choose **Normal** to populate the demonstration template, or **Custom** for blank text. Edit and **Save draft**; reload to verify persistence.
 4. **Save & send for review** → **Return for edits** → revise → resubmit.
 5. **Approve report** → confirm simulation → **Finalize report** → confirm locking.
-6. **Print / Save as PDF** → select your browser's PDF destination. Verify only selected images appear.
+6. Inspect the final report in **PDF preview**. Turn pages, zoom or fit to width, then **Download PDF**. **Print / Save as PDF** also retains the browser print workflow. Verify only selected images appear.
+
+The preview and direct download use the same locally generated A4 PDF. Pages are rendered as images to preserve the report's layout, Arabic text and slides; downloaded text is not selectable. The readable HTML report remains available to assistive technology, and the existing browser print option retains text-based output. PDF generation checks finalization and selected-image availability before export and releases its temporary DOM, worker and object URL when leaving the report.
 
 ## Connecting a backend later
 

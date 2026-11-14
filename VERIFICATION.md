@@ -1,5 +1,21 @@
 # Verification record
 
+## Final-report PDF viewer — 14 November 2026
+
+- ESLint, all 15 unit tests and the Vite production build passed.
+- All eight Chromium browser journeys passed. The three PDF-viewer journeys passed again after the final capture-spacing and resize fixes.
+- Verified actual multi-page PDF download, page navigation, zoom, fit-to-width, matching page counts, retained browser printing and readable print content.
+- Verified mobile Arabic rendering, language switching, reload, route cleanup and no outer overflow at 390px.
+- A missing selected image blocks download with an actionable error. Retry succeeds when the image becomes available; the test checks its color in the rendered PDF pixels.
+- Production preview loaded the bundled PDF worker and downloaded the report with no browser errors.
+- Desktop and Arabic mobile captures were inspected. The finish review requested a footer capture fix; its verdict pass scored that fix resolved and returned `ship`. Confirmed captures: `.impeccable/review/desktop-confirmed.png` and `.impeccable/review/mobile-fixed.png`.
+- The viewer preserves the last rendered page while resizing or changing zoom. Initial loading, failure and retry states remain available.
+- The design detector reported no primary findings; incumbent CSS token advisories remain. Documentation review confirmed the existing system is inherited; PRODUCT.md, DESIGN.md and `.impeccable/design.json` are unchanged.
+
+The preview and direct download use the same locally generated image-based A4 PDF. Text selection/search is available through the retained browser print output rather than the direct download. PDF generation and viewing are lazy-loaded on finalized reports; their compatibility bundle and worker add approximately 320 kB gzip and 1.3 MB uncompressed respectively. The build retains chunk-size and upstream Zod comment advisories.
+
+## Original workflow
+
 Verified on 11 November 2026 (Africa/Cairo).
 
 | Check | Result |

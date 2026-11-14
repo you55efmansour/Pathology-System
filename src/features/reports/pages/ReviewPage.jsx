@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
 import { Navigate, useNavigate, useOutletContext } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useReactToPrint } from 'react-to-print';
@@ -11,6 +11,8 @@ import { casePath } from '@/features/cases/config/caseConfig';
 import caseService from '@/features/cases/services/caseService';
 import { imageRepository } from '@/services/imageRepository';
 import { ReportDocument } from '../components/ReportDocument';
+
+const FinalReportViewer = lazy(() => import('../components/FinalReportViewer'));
 
 export default function ReviewPage({ finalized = false }) {
   const { item, busy } = useOutletContext();
@@ -53,7 +55,8 @@ function ReviewReport({ item, busy }) {
     <div className="review-heading"><div><h2>{t(final ? 'locked' : 'review')}</h2><p>{t(final ? 'finalDescription' : 'reviewDescriptionCase')}</p></div>{final && <LockKeyhole size={22} />}</div>
     {!final && <div className="notice notice-simulation"><Info size={18} /><div><strong>{t('simulatedApproval')}</strong><p>{t('approvalNote')}</p></div></div>}
     {item.status === 'approved' && <div className="notice notice-success"><ShieldCheck size={23} /><div><strong>{t('approvedReady')}</strong><p>{t('approvedHint')}</p></div></div>}
-    <div ref={contentRef}><ReportDocument item={item} /></div>
+    {final && <Suspense fallback={<div className="pdf-message" role="status">{t('preparingPdf')}</div>}><FinalReportViewer key={`${item.id}-${i18n.resolvedLanguage}`} item={item} sourceRef={contentRef} /></Suspense>}
+    <div ref={contentRef} className={final ? 'pdf-report-source' : undefined}><ReportDocument item={item} /></div>
     <div className="review-actions">{final ? <><p><LockKeyhole size={15} />{t('printHint')}</p><Button disabled={printing} onClick={exportReport}><Printer size={17} />{t(printing ? 'printing' : 'exportPdf')}</Button></> : <><Button variant="outlined" disabled={busy} onClick={() => returnDraft(true)}><PencilLine size={16} />{t('returnEdits')}</Button><div><Button variant="ghost" disabled={busy} onClick={() => returnDraft(false)}><Save size={16} />{t('saveDraft')}</Button><Button disabled={busy} onClick={() => setConfirm(item.status === 'approved' ? 'finalize' : 'approve')}>{item.status === 'approved' ? <LockKeyhole size={16} /> : <Check size={17} />}{t(item.status === 'approved' ? 'finalize' : 'approve')}</Button></div></>}</div>
     <ConfirmDialog open={!!confirm} onOpenChange={(open) => { if (!open) setConfirm(''); }} title={t(confirm === 'approve' ? 'approveTitle' : 'finalizeTitle')} description={t(confirm === 'approve' ? 'approveDescription' : 'finalizeDescription')} action={t(confirm === 'approve' ? 'confirmApprove' : 'confirmFinalize')} busy={busy} onConfirm={decide} />
   </div>;
